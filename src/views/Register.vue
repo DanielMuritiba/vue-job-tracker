@@ -59,18 +59,6 @@
             <input
               class="form-check-input"
               type="radio"
-              id="roleCompany"
-              value="COMPANY"
-              v-model="formData.role"
-              name="role"
-            />
-            <label class="form-check-label" for="roleCompany">Company</label>
-          </div>
-
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="radio"
               id="roleUser"
               value="USER"
               v-model="formData.role"
@@ -78,6 +66,22 @@
             />
             <label class="form-check-label" for="roleUser">User</label>
           </div>
+
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="radio"
+              id="roleCompany"
+              value="COMPANY"
+              v-model="formData.role"
+              name="role"
+            />
+            <label class="form-check-label" for="roleCompany">Company</label>
+          </div>
+        </div>
+
+        <div v-if="!formData.role && submitted" class="text-danger mb-2">
+          Please select a role.
         </div>
 
         <button
@@ -97,6 +101,7 @@
 </template>
 <script>
 import User from "@/models/user";
+import AuthenticationService from "@/services/authentication.service";
 import vuex from "vuex";
 
 export default {
@@ -112,8 +117,38 @@ export default {
   computed: {
     ...vuex.mapGetters(["currentUser"]),
   },
+  mounted() {
+    if (this.currentUser?.email) {
+      this.$router.push("/profile");
+    }
+  },
   methods: {
-    handleRegister() {},
+    handleRegister() {
+      if (
+        !this.formData.username ||
+        !this.formData.password ||
+        !this.formData.email ||
+        !this.formData.role
+      ) {
+        return;
+      }
+
+      this.loading = true;
+
+      AuthenticationService.register(this.formData)
+        .then(() => {
+          this.$router.push("/login");
+        })
+        .catch((err) => {
+          console.log(err);
+          if (err?.response?.status === 409) {
+            this.errorMessage = "Email already exists.";
+          } else {
+            this.errorMessage = "Unexpected error occurred.";
+          }
+        })
+        .then(() => (this.loading = false));
+    },
   },
 };
 </script>

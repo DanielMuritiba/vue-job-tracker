@@ -5,6 +5,8 @@ import Login from "../views/Login.vue";
 import NotFound from "../views/NotFound.vue";
 import Unauthorized from "../views/Unauthorized.vue";
 import Home from "@/views/Home.vue";
+import Profile from "@/views/Profile.vue";
+import Role from "@/models/role";
 
 const routes = [
   {
@@ -21,6 +23,14 @@ const routes = [
     path: "/home",
     name: "home",
     component: Home,
+  },
+  {
+    path: "/profile",
+    name: "profile",
+    component: Profile,
+    meta: {
+      roles: [Role.ADMIN, Role.USER],
+    },
   },
   {
     path: "/404",

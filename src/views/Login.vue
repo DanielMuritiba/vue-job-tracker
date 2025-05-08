@@ -57,30 +57,53 @@
 </template>
 <script>
 import User from "@/models/user";
-import { ref } from "vue";
-import { useStore } from "vuex";
+import AuthenticationService from "@/services/authentication.service";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "LoginView",
-  setup() {
-    const formData = ref(new User());
-    const loading = ref(false);
-    const submitted = ref(false);
-    const errorMessage = ref("");
 
-    const store = useStore();
-    const { currentUser } = store.getters;
-
-    function handleLogin() {}
-
+  data() {
     return {
-      formData,
-      loading,
-      submitted,
-      errorMessage,
-      currentUser,
-      handleLogin,
+      formData: new User(),
+      loading: false,
+      submitted: false,
+      errorMessage: "",
     };
+  },
+
+  computed: {
+    ...mapGetters(["currentUser"]),
+  },
+
+  mounted() {
+    if (this.currentUser?.email) {
+      this.$router.push("/home");
+    }
+  },
+
+  methods: {
+    ...mapActions(["updateUser"]),
+    handleLogin() {
+      if (!this.formData.email || !this.formData.password) {
+        return;
+      }
+
+      this.loading = true;
+
+      AuthenticationService.login(this.formData)
+        .then((response) => {
+          this.updateUser(response.data);
+          this.$router.push("/home");
+        })
+        .catch((err) => {
+          console.error(err);
+          this.errorMessage = "There was a problem with your login.";
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    },
   },
 };
 </script>
