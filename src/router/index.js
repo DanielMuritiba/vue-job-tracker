@@ -6,7 +6,8 @@ import NotFound from "../views/NotFound.vue";
 import Unauthorized from "../views/Unauthorized.vue";
 import Home from "@/views/Home.vue";
 import Profile from "@/views/Profile.vue";
-import Role from "@/models/role";
+import CompanyJobs from "@/views/CompanyJobs.vue";
+import CreateVacancies from "@/views/CreateVacancies.vue";
 
 const routes = [
   {
@@ -28,9 +29,16 @@ const routes = [
     path: "/profile",
     name: "profile",
     component: Profile,
-    meta: {
-      roles: [Role.ADMIN, Role.USER],
-    },
+  },
+  {
+    path: "/CompanyJobs",
+    name: "CompanyJobs",
+    component: CompanyJobs,
+  },
+  {
+    path: "/CreateVacancies",
+    name: "CreateVacancies",
+    component: CreateVacancies,
   },
   {
     path: "/404",

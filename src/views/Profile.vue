@@ -1,6 +1,6 @@
 <template>Profile</template>
 <script>
 export default {
-  name: "profile",
+  name: "profileView",
 };
 </script>
