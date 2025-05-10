@@ -12,7 +12,7 @@
             </div>
 
             <div class="col-6 text-end">
-              <button class="btn btn-primary" @click="createDeviceRequest">
+              <button class="btn btn-primary" @click="createJobVacancyRequest">
                 Create job vacancy
               </button>
             </div>
@@ -40,20 +40,18 @@
                   {{ new Date(jobVacancy.createTime).toLocaleDateString() }}
                 </td>
                 <td>
-                  <button class="btn btn-primary me-1">Edit</button>
-                  <!-- <button
+                  <button
                     class="btn btn-primary me-1"
-                    @click="editDeviceRequest(jobVacancy)"
+                    @click="editJobVacancyRequest(jobVacancy)"
                   >
-                    > Edit
-                  </button> -->
-                  <button class="btn btn-danger">Delete</button>
-                  <!-- <button
+                    Edit
+                  </button>
+                  <button
                     class="btn btn-danger"
-                    @click="deleteDeviceRequest(jobVacancy, ind)"
+                    @click="deleteJobVacancyRequest(jobVacancy, ind)"
                   >
-                    > Delete
-                  </button> -->
+                    Delete
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -62,15 +60,36 @@
       </div>
     </div>
   </div>
+  <job-vacancy-modal
+    ref="jobVacancyModal"
+    :selected-job-vacancy="selectedJobVacancy"
+    @saved="jobVacancySaved"
+  />
+  <job-vacancy-delete-modal
+    ref="deleteJobVacancyModal"
+    @confirmed="deleteJobVacancy"
+  />
 </template>
 <script>
+import JobVacancyDeleteModal from "@/components/JobVacancyDeleteConfirm.vue";
+import JobVacancyModal from "@/components/JobVacancy.vue";
+import JobVacancy from "@/models/jobVacancy";
 import jobVacancyService from "@/services/jobVacancy.service";
 import store from "@/store";
+import { nextTick } from "vue";
+
 export default {
   name: "CompanyJobsView",
+  components: {
+    JobVacancyModal,
+    JobVacancyDeleteModal,
+  },
+
   data() {
     return {
       jobVacancyList: [],
+      selectedJobVacancy: new JobVacancy(),
+      errorMessage: "",
     };
   },
   mounted() {
@@ -84,6 +103,55 @@ export default {
         this.errorMessage = "You are not authorized to view this content.";
       });
     console.log("User atual:", store.getters.currentUser);
+  },
+  methods: {
+    createJobVacancyRequest() {
+      this.selectedJobVacancy = new JobVacancy();
+
+      nextTick(() => {
+        this.$refs["jobVacancyModal"].showJobVacancyModal();
+      });
+    },
+
+    deleteJobVacancy() {
+      jobVacancyService
+        .deleteJobVacancy(this.selectedJobVacancy.id)
+        .then(() => {
+          this.jobVacancyList.splice(this.selectedIndex, 1);
+        })
+        .catch((err) => {
+          this.errorMessage = "Unexpected error occurred";
+          console.log(err);
+        });
+    },
+
+    editJobVacancyRequest(jobVacancy) {
+      this.selectedJobVacancy = Object.assign({}, jobVacancy);
+
+      nextTick(() => {
+        this.$refs["jobVacancyModal"].showJobVacancyModal();
+      });
+    },
+
+    deleteJobVacancyRequest(jobVacancy, ind) {
+      this.selectedJobVacancy = jobVacancy;
+      this.selectedIndex = ind;
+
+      nextTick(() => {
+        this.$refs["deleteJobVacancyModal"].showDeleteModal(jobVacancy.jobName);
+      });
+    },
+
+    jobVacancySaved(jobVacancy) {
+      const itemIndex = this.jobVacancyList.findIndex(
+        (item) => item.id === jobVacancy.id
+      );
+      if (itemIndex !== -1) {
+        this.jobVacancyList[itemIndex] = jobVacancy;
+      } else {
+        this.jobVacancyList.unshift(jobVacancy);
+      }
+    },
   },
 };
 </script>
