@@ -8,6 +8,8 @@ import Home from "@/views/Home.vue";
 import Profile from "@/views/Profile.vue";
 import CompanyJobs from "@/views/CompanyJobs.vue";
 import CreateVacancies from "@/views/CreateVacancies.vue";
+import Role from "@/models/role";
+import store from "@/store";
 
 const routes = [
   {
@@ -29,16 +31,19 @@ const routes = [
     path: "/profile",
     name: "profile",
     component: Profile,
+    meta: { roles: [Role.USER] },
   },
   {
     path: "/CompanyJobs",
     name: "CompanyJobs",
     component: CompanyJobs,
+    meta: { roles: [Role.COMPANY] },
   },
   {
     path: "/CreateVacancies",
     name: "CreateVacancies",
     component: CreateVacancies,
+    meta: { roles: [Role.COMPANY] },
   },
   {
     path: "/404",
@@ -61,4 +66,18 @@ const router = createRouter({
   routes,
 });
 
+router.beforeEach((to, from, next) => {
+  const { roles } = to.meta;
+  const currentUser = store.getters["currentUser"];
+
+  if (roles?.length) {
+    if (!currentUser) {
+      return next({ path: "/login" });
+    }
+    if (!roles.includes(currentUser.role)) {
+      return next({ path: "/401" });
+    }
+  }
+  next();
+});
 export default router;

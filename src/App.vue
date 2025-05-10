@@ -67,13 +67,6 @@ export default {
   computed: {
     ...vuex.mapGetters(["currentUser"]),
     isCompany() {
-      console.log("typeof currentUser.role:", typeof this.currentUser.role);
-      console.log("typeof Role.COMPANY:", typeof Role.COMPANY);
-      console.log(
-        "currentUser.role === 'COMPANY':",
-        this.currentUser?.role === "COMPANY"
-      );
-
       return this.currentUser?.role == Role.COMPANY;
     },
   },
