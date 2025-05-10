@@ -75,7 +75,6 @@ import JobVacancyDeleteModal from "@/components/JobVacancyDeleteConfirm.vue";
 import JobVacancyModal from "@/components/JobVacancy.vue";
 import JobVacancy from "@/models/jobVacancy";
 import jobVacancyService from "@/services/jobVacancy.service";
-import store from "@/store";
 import { nextTick } from "vue";
 
 export default {
@@ -102,7 +101,6 @@ export default {
         console.error(err);
         this.errorMessage = "You are not authorized to view this content.";
       });
-    console.log("User atual:", store.getters.currentUser);
   },
   methods: {
     createJobVacancyRequest() {

@@ -23,6 +23,13 @@
         </li>
       </div>
 
+      <div
+        class="navbar-text mx-auto text-light"
+        v-if="currentUser && isCompany"
+      >
+        {{ currentUser.username }}
+      </div>
+
       <!-- User logged out -->
       <div class="navbar-nav ms-auto me-4" v-if="!currentUser">
         <li class="nav-item">
@@ -67,6 +74,7 @@ export default {
   computed: {
     ...vuex.mapGetters(["currentUser"]),
     isCompany() {
+      console.log("Usuário completo:", this.currentUser);
       return this.currentUser?.role == Role.COMPANY;
     },
   },
