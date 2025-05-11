@@ -13,6 +13,10 @@ import store from "@/store";
 
 const routes = [
   {
+    path: "/",
+    redirect: "/home",
+  },
+  {
     path: "/login",
     name: "login",
     component: Login,
@@ -67,17 +71,18 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const { roles } = to.meta;
+  const requiredRoles = to.meta.roles;
   const currentUser = store.getters["currentUser"];
 
-  if (roles?.length) {
+  if (requiredRoles?.length) {
     if (!currentUser) {
       return next({ path: "/login" });
     }
-    if (!roles.includes(currentUser.role)) {
+
+    if (!requiredRoles.includes(currentUser.role)) {
       return next({ path: "/401" });
     }
   }
-  next();
+  return next();
 });
 export default router;

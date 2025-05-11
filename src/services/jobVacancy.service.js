@@ -17,8 +17,8 @@ class JobVacancyService {
     return handleResponseWithLoginCheck(req);
   }
 
-  getAllJobVacancies() {
-    return axios.get(API_URL);
+  getAllJobVacancies(page = 0, size = 5) {
+    return axios.get(`${API_URL}?page=${page}&size=${size}`);
   }
 
   getCompanyJobVacancies(page = 0, size = 5) {

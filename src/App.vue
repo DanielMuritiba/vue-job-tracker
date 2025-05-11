@@ -74,7 +74,6 @@ export default {
   computed: {
     ...vuex.mapGetters(["currentUser"]),
     isCompany() {
-      console.log("Usuário completo:", this.currentUser);
       return this.currentUser?.role == Role.COMPANY;
     },
   },

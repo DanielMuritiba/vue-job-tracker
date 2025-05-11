@@ -1,6 +1,4 @@
 import store from "@/store";
-import Store from "../store";
-import router from "@/router";
 
 export const authHeader = () => {
   const { currentUser } = store.state;
@@ -13,17 +11,10 @@ export const authHeader = () => {
 
 export const handleResponseWithLoginCheck = (promise) => {
   return promise
-    .then((data) => {
-      return data;
-    })
+    .then((data) => data)
     .catch((error) => {
       const status = error?.response?.status;
-
-      if (status === 403 || status === 401) {
-        Store.dispatch("clearUser").then(() => {
-          router.push({ name: "login" }).catch((e) => console.log(e));
-        });
-      }
+      console.warn("Error:", status, error?.response?.data?.message);
 
       return Promise.reject(error);
     });

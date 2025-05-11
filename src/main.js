@@ -15,9 +15,13 @@ import "./global.css";
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faHome, faUserCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faHome,
+  faUserCircle,
+  faBriefcase,
+} from "@fortawesome/free-solid-svg-icons";
 
-library.add(faHome, faUserCircle);
+library.add(faHome, faUserCircle, faBriefcase);
 
 createApp(App)
   .use(store)
