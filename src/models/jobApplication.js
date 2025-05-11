@@ -11,9 +11,9 @@ export default class JobApplication {
     this.id = id;
     this.status = status;
     this.userUsername = userUsername;
-    this.skills = skills;
+    this.userSkills = userSkills;
     this.email = email;
-    this.description = description;
+    this.userDescription = userDescription;
     this.score = score;
   }
 }

@@ -20,15 +20,17 @@ class JobApplicationService {
   }
 
   updateStatusOrScore(updateData) {
+    console.log("updateData");
+    console.log(updateData);
     const req = axios.put(`${API_URL}/company-jobs`, updateData, {
       headers: authHeader(),
     });
     return handleResponseWithLoginCheck(req);
   }
 
-  getApplicationsByJobVacancy(jobVacancyId, page = 0, size = 5) {
+  getAllCompanyApplications(page = 0, size = 5) {
     const req = axios.get(
-      `${API_URL}/company-applications/${jobVacancyId}?page=${page}&size=${size}`,
+      `${API_URL}/company-applications?page=${page}&size=${size}`,
       {
         headers: authHeader(),
       }

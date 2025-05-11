@@ -60,6 +60,49 @@
       </div>
     </div>
   </div>
+  <nav class="mt-4">
+    <div
+      class="d-flex justify-content-start align-items-center flex-wrap gap-4"
+    >
+      <div class="d-flex align-items-center">
+        <label for="pageSizeSelect" class="form-label me-2 mb-0">
+          Applications per page:
+        </label>
+        <select
+          id="pageSizeSelect"
+          class="form-select w-auto"
+          v-model.number="size"
+          @change="onSizeChange"
+        >
+          <option :value="5">5</option>
+          <option :value="10">10</option>
+          <option :value="15">15</option>
+          <option :value="20">20</option>
+        </select>
+      </div>
+
+      <ul class="pagination mb-0">
+        <li class="page-item" :class="{ disabled: page === 0 }">
+          <button class="page-link" @click="prevPage">Previous</button>
+        </li>
+
+        <li
+          class="page-item"
+          v-for="n in totalPages"
+          :key="n"
+          :class="{ active: page === n - 1 }"
+        >
+          <button class="page-link" @click="goToPage(n - 1)">
+            {{ n }}
+          </button>
+        </li>
+
+        <li class="page-item" :class="{ disabled: page >= totalPages - 1 }">
+          <button class="page-link" @click="nextPage">Next</button>
+        </li>
+      </ul>
+    </div>
+  </nav>
   <job-vacancy-modal
     ref="jobVacancyModal"
     :selected-job-vacancy="selectedJobVacancy"
@@ -88,21 +131,29 @@ export default {
     return {
       jobVacancyList: [],
       selectedJobVacancy: new JobVacancy(),
+      page: 0,
+      size: 5,
+      totalPages: 0,
       errorMessage: "",
     };
   },
   mounted() {
-    jobVacancyService
-      .getCompanyJobVacancies(0, 10)
-      .then((response) => {
-        this.jobVacancyList = response.data.content ?? response.data;
-      })
-      .catch((err) => {
-        console.error(err);
-        this.errorMessage = "You are not authorized to view this content.";
-      });
+    this.fetchVacancies();
   },
   methods: {
+    fetchVacancies() {
+      jobVacancyService
+        .getCompanyJobVacancies(this.page, this.size)
+        .then((response) => {
+          this.jobVacancyList = response.data.content ?? response.data;
+          this.totalPages = response.data.totalPages ?? 1;
+        })
+        .catch((err) => {
+          console.error(err);
+          this.errorMessage = "You are not authorized to view this content.";
+        });
+    },
+
     createJobVacancyRequest() {
       this.selectedJobVacancy = new JobVacancy();
 
@@ -149,6 +200,30 @@ export default {
       } else {
         this.jobVacancyList.unshift(jobVacancy);
       }
+    },
+
+    goToPage(index) {
+      this.page = index;
+      this.fetchVacancies();
+    },
+
+    nextPage() {
+      if (this.page < this.totalPages - 1) {
+        this.page++;
+        this.fetchVacancies();
+      }
+    },
+
+    prevPage() {
+      if (this.page > 0) {
+        this.page--;
+        this.fetchVacancies();
+      }
+    },
+
+    onSizeChange() {
+      this.page = 0;
+      this.fetchVacancies();
     },
   },
 };
