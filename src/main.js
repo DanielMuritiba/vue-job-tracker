@@ -19,9 +19,21 @@ import {
   faHome,
   faUserCircle,
   faBriefcase,
+  faThumbsUp,
+  faThumbsDown,
+  faMagnifyingGlass,
+  faCalendarDays,
 } from "@fortawesome/free-solid-svg-icons";
 
-library.add(faHome, faUserCircle, faBriefcase);
+library.add(
+  faHome,
+  faUserCircle,
+  faBriefcase,
+  faThumbsUp,
+  faThumbsDown,
+  faMagnifyingGlass,
+  faCalendarDays
+);
 
 createApp(App)
   .use(store)

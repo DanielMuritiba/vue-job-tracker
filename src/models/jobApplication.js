@@ -9,7 +9,7 @@ export default class JobApplication {
     score
   ) {
     this.id = id;
-    this.statusApplication = statusApplication;
+    this.status = status;
     this.userUsername = userUsername;
     this.skills = skills;
     this.email = email;
