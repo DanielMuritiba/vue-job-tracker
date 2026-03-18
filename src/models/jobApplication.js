@@ -1,11 +1,11 @@
 export default class JobApplication {
   constructor(
     id,
-    statusApplication,
+    status,
     userUsername,
-    skills,
+    userSkills,
     email,
-    description,
+    userDescription,
     score
   ) {
     this.id = id;
